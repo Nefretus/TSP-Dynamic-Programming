@@ -1,11 +1,10 @@
 #include<iostream>
 #include<vector>
 #include<fstream>
-#include <cmath>
+#include<cmath>
 
 class Tsp {
 public:
-
     Tsp(const std::string filepath) {
         std::fstream file(filepath, std::ios_base::in);
         auto distance = [](const Coords& city, const Coords& other) -> float {
@@ -25,28 +24,20 @@ public:
     
         for (int i = 0; i < n_nodes; i++) {
             for (int j = 0; j < n_nodes; j++) {
-                cost_matrix[i][j] = distance(city[i], city[j]);
+                cost_matrix[i][j] = i == j ? 0 : distance(city[i], city[j]);
             }
         }
     }
 
     float run(int city, int mask) {
-        if (mask == ((1 << cost_matrix.size()) - 1)) { // check if all the cities are visited
+        if (mask == ((1 << cost_matrix.size()) - 1))
             return cost_matrix[city][0];
-        } 
 
-        if (memo[mask][city] != 0) {
+        if (memo[mask][city] != 0) 
             return memo[mask][city];
-        }
 
         float res = 1000000.0;
         for (int i = 0; i < cost_matrix.size(); i++) {
-            //ex.
-            // mask = 0101 - zerowy oraz drugi klient odwiedzony
-            // city = 0001 - skip iteracji bo pierwszy klient odwiedzony
-            // city = 0010 - zmien maske na mask = 0111 oraz uruchom wywolanie rekurencyjne
-            // 
-            // and spowoduje ze wszystkie inne bity wyzeruj¹, sprawdzamy czy bit od aktualnego miast jest rowny 0 np. 1010 & (1 << 1) = 1010 & 0001 = 000[0] - nieodwiedzone! 
             if ((mask & (1 << i)) == 0) {  
                 float current_res = cost_matrix[i][city] + run(i, mask | (1 << i));
                 if (current_res < res) {
@@ -78,7 +69,7 @@ private:
 };
 
 int main() {
-    Tsp tsp("data.txt");// pocztkowe miast = 0, maska = 1 (pierwszy odwiedzony)
+    Tsp tsp("data.txt");
     std::cout << std::ceil(tsp.run(0, 1)) << std::endl;
     tsp.print_route();
 	return 0;
