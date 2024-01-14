@@ -39,7 +39,7 @@ public:
         float res = 1000000.0;
         for (int i = 0; i < cost_matrix.size(); i++) {
             if ((mask & (1 << i)) == 0) {  
-                float current_res = cost_matrix[i][city] + run(i, mask | (1 << i));
+                float current_res = cost_matrix[city][i] + run(i, mask | (1 << i));
                 if (current_res < res) {
                     res = current_res;
                     parent_matrix[mask][city] = i;
